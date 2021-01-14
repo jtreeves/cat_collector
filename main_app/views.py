@@ -1,16 +1,16 @@
 from django.shortcuts import render
 from .models import Cat
-from django.view.generic.edit import CreateView, UpdateVieew, DeleteView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.http import HttpResponse, HttpResponseRedirect
 
-# Create your views here.
+# MAIN ----------------
 def index(request):
     return render(request, 'index.html')
 
 def about(request):
     return render(request, 'about.html')
 
-# CATS
+# CATS ----------------
 def cats_index(request):
     cats = Cat.objects.all()
     return render(request, 'cats/index.html', {'cats': cats})
