@@ -34,7 +34,7 @@ def login_view(request):
                     login(request, user)
                     return HttpResponseRedirect('/user/' + username)
                 else:
-                    priint(f'The account for {username} has been disabled.')
+                    print(f'The account for {username} has been disabled.')
             else:
                 print('The username and/or password is incorrect.')
     else:
