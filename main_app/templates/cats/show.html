@@ -17,17 +17,19 @@
         {% empty %}
             <p>Cat has no toys...</p>
         {% endfor %}
-        <a 
-            class='btn btn-primary' 
-            href='{% url 'cats_update' cat.id %}'
-        >
-            Update Details
-        </a>
-        <a 
-            class='btn btn-danger' 
-            href='{% url 'cats_delete' cat.id %}'
-        >
-            Delete Cat
-        </a>
+        {% if user.is_authenticated %}
+            <a 
+                class='btn btn-primary' 
+                href='{% url 'cats_update' cat.id %}'
+            >
+                Update Details
+            </a>
+            <a 
+                class='btn btn-danger' 
+                href='{% url 'cats_delete' cat.id %}'
+            >
+                Delete Cat
+            </a>
+        {% endif %}
     </div>
 {% endblock %}

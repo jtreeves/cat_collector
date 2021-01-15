@@ -3,8 +3,10 @@ from .models import Cat, CatToy
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth import authenticate, login, logout
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
 
 # MAIN ----------------
 def index(request):
@@ -14,6 +16,7 @@ def about(request):
     return render(request, 'about.html')
 
 # USER ----------------
+@login_required
 def profile(request, username):
     user = User.objects.get(username = username)
     cats = Cat.objects.filter(user = user)
@@ -45,6 +48,20 @@ def logout_view(request):
     logout(request)
     return HttpResponseRedirect('/cats')
 
+def signup_view(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return HttpResponseRedirect('/user/' + str(user))
+        else:
+            form = UserCreationForm()
+            return render(request, 'signup.html', {'form': form})
+    else:
+        form = UserCreationForm()
+        return render(request, 'signup.html', {'form': form})
+
 # CATS ----------------
 def cats_index(request):
     cats = Cat.objects.all()
@@ -54,6 +71,7 @@ def cats_show(request, cat_id):
     cat = Cat.objects.get(id = cat_id)
     return render(request, 'cats/show.html', {'cat': cat})
 
+@method_decorator(login_required, name = 'dispatch')
 class CatCreate(CreateView):
     model = Cat
     fields = '__all__'
@@ -65,6 +83,7 @@ class CatCreate(CreateView):
         self.object.save()
         return HttpResponseRedirect('/cats/' + str(self.object.pk))
 
+@method_decorator(login_required, name = 'dispatch')
 class CatUpdate(UpdateView):
     model = Cat
     fields = ['name', 'breed', 'description', 'age', 'cattoys']
@@ -74,6 +93,7 @@ class CatUpdate(UpdateView):
         self.object.save()
         return HttpResponseRedirect('/cats')
 
+@method_decorator(login_required, name = 'dispatch')
 class CatDelete(DeleteView):
     model = Cat
     success_url = '/cats'
@@ -87,16 +107,19 @@ def cattoys_show(request, cattoy_id):
     cattoy = CatToy.objects.get(id = cattoy_id)
     return render(request, 'cattoys/show.html', {'cattoy': cattoy})
 
+@method_decorator(login_required, name = 'dispatch')
 class CatToyCreate(CreateView):
     model = CatToy
     fields = '__all__'
     success_url = '/cattoys'
 
+@method_decorator(login_required, name = 'dispatch')
 class CatToyUpdate(UpdateView):
     model = CatToy
     fields = ['name', 'color']
     success_url = '/cattoys'
 
+@method_decorator(login_required, name = 'dispatch')
 class CatToyDelete(DeleteView):
     model = CatToy
     success_url = '/cattoys'
