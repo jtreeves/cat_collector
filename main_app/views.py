@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import Cat
+from .models import Cat, CatToy
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.models import User
@@ -10,6 +10,15 @@ def index(request):
 
 def about(request):
     return render(request, 'about.html')
+
+# USER ----------------
+def profile(request, username):
+    user = User.objects.get(username = username)
+    cats = Cat.objects.filter(user = user)
+    return render(request, 'profile.html', {
+        'username': username,
+        'cats': cats
+    })
 
 # CATS ----------------
 def cats_index(request):
@@ -44,11 +53,25 @@ class CatDelete(DeleteView):
     model = Cat
     success_url = '/cats'
 
-# USER ----------------
-def profile(request, username):
-    user = User.objects.get(username = username)
-    cats = Cat.objects.filter(user = user)
-    return render(request, 'profile.html', {
-        'username': username,
-        'cats': cats
-    })
+# CATTOYS ----------------
+def cattoys_index(request):
+    cattoys = CatToy.objects.all()
+    return render(request, 'cattoys/index.html', {'cattoys': cattoys})
+
+def cattoys_show(request, cattoy_id):
+    cattoy = CatToy.objects.get(id = cattoy_id)
+    return render(request, 'cattoys/show.html', {'cattoy': cattoy})
+
+class CatToyCreate(CreateView):
+    model = CatToy
+    fields = '__all__'
+    success_url = '/cattoys'
+
+class CatToyUpdate(UpdateView):
+    model = CatToy
+    fields = ['name', 'color']
+    success_url = '/cattoys'
+
+class CatToyDelete(DeleteView):
+    model = CatToy
+    success_url = '/cattoys'
