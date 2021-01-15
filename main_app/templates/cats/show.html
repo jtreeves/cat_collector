@@ -11,6 +11,12 @@
         {% else %}
             <p>Age: Kitten</p>
         {% endif %}
+        <p>Toys:</p>
+        {% for cattoy in cat.cattoys.all %}
+            <p>{{cattoy.name}}</p>
+        {% empty %}
+            <p>Cat has no toys...</p>
+        {% endfor %}
         <a 
             class='btn btn-primary' 
             href='{% url 'cats_update' cat.id %}'

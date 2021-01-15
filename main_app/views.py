@@ -42,7 +42,7 @@ class CatCreate(CreateView):
 
 class CatUpdate(UpdateView):
     model = Cat
-    fields = ['name', 'breed', 'description', 'age']
+    fields = ['name', 'breed', 'description', 'age', 'cattoys']
     
     def form_valid(self, form):
         self.object = form.save(commit = False)
