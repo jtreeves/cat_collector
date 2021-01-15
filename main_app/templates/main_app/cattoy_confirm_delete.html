@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Delete Cat Toy</h1>
+    <p>Are you sure you want to delete <strong>{{ cattoy }}</strong>?</p>
+    <form action='' method='post'>
+        {% csrf_token %}
+        <input class='btn btn-danger' type='submit' value='Delete'>
+        <a class='btn btn-secondary' href='{% url 'cattoys_show' cattoy.id %}'>Cancel</a>
+    </form>
+{% endblock %}
